@@ -15,8 +15,11 @@ datasource db {
 
 model StudyGroup {
   id String @id @default(uuid())
-  name String
+  nickname String
+  studyname String
   description String
+  password String
+  point Int @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

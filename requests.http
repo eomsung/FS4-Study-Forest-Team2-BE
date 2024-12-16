@@ -1,1 +1,1 @@
-GET http://localhost:3100/study?page=1&pageSize=6
+GET http://localhost:3100/study?page=1&pageSize=2

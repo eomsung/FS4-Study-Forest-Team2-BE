@@ -49,8 +49,24 @@ app.get(
       keyword = "",
     } = req.query;
     const offset = (page - 1) * pageSize;
-    const sortOption =
-      orderBy === "recent" ? { createdAt: "desc" } : { createdAt: "asc" };
+    let sortOption;
+    switch (orderBy) {
+      case "recent":
+        sortOption = { createdAt: "desc" };
+        break;
+      case "oldest":
+        sortOption = { createdAt: "asc" };
+        break;
+      case "highestPoint":
+        sortOption = { point: "desc" };
+        break;
+      case "lowestPoints":
+        sortOption = { point: "asc" };
+        break;
+      default:
+        sortOption = { createdAt: "desc" };
+        break;
+    }
 
     const search = keyword
       ? {
@@ -73,6 +89,6 @@ app.get(
   })
 );
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log(`Server started`);
 });

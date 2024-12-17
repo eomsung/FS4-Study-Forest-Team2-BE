@@ -89,6 +89,20 @@ app.get(
   })
 );
 
+// 특정 스터디 조회 api  ,
+app.get(
+  "/study/:id",
+  asyncHandler(async (req, res) => {
+    const id = req.params.id;
+
+    const study = await prisma.studyGroup.findUniqueOrThrow({
+      where: { id },
+    });
+
+    res.send(study);
+  })
+);
+
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server started`);
 });

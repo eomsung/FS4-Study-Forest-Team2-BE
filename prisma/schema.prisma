@@ -14,12 +14,14 @@ datasource db {
 }
 
 model StudyGroup {
-  id String @id @default(uuid())
-  nickname String
-  studyname String
+  id          String   @id @default(uuid())
+  nickname    String
+  studyname   String
   description String
-  password String
-  point Int @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  password    String
+  point       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  img         String[] @default([])
+  tags        String[] @default([])
 }

@@ -89,6 +89,28 @@ app.get(
   })
 );
 
+app.post("/study", async (req, res) => {
+  try {
+    const { nickname, studyname, description, password, point, img, tags } =
+      req.body;
+    const newStudyGroup = await prisma.studyGroup.create({
+      data: {
+        nickname,
+        studyname,
+        description,
+        password,
+        img,
+        point: point || 0,
+        tags: tags || [],
+      },
+    });
+    res.status(201).json({ id: newStudyGroup.id });
+  } catch (error) {
+    console.error("Error creating study group:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // 특정 스터디 조회 api  ,
 app.get(
   "/study/:id",

@@ -1,130 +1,77 @@
-import express from "express";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { assert } from "superstruct";
-import * as dotenv from "dotenv";
-import cors from "cors";
+import 'dotenv/config'; // .env 파일 로드
 
-dotenv.config();
-const prisma = new PrismaClient();
+import express from 'express';
+import cors from 'cors';
+
 const app = express();
+const port = process.env.PORT || 3100;
+const DATABASE_URL = process.env.DATABASE_URL;
 
-const asyncHandler = (handler) => {
-  return async function (req, res) {
-    try {
-      await handler(req, res);
-    } catch (e) {
-      if (
-        e.name === "StructError" ||
-        e instanceof Prisma.PrismaClientValidationError
-      ) {
-        res.status(400).send({ message: e.message });
-      } else if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === "P2025"
-      ) {
-        res.sendStatus(404);
-      } else {
-        res.status(500).send({ message: e.message });
-      }
-    }
-  };
+// 미들웨어 설정
+app.use(cors());
+app.use(express.json()); // application/json 파싱
+
+let todos = [
+  { id: 1, text: '미라클모닝 6시 기상' },
+  { id: 2, text: '아침 챙겨 먹기' },
+  { id: 3, text: 'React 스터디 책 1챕터 읽기' },
+  { id: 4, text: '스트레칭' },
+  { id: 5, text: '영양제 챙겨 먹기' },
+  { id: 6, text: '사이드 프로젝트' },
+  { id: 7, text: '물 2L 먹기' },
+];
+
+// 페이지네이션을 위한 헬퍼 함수
+const paginate = (array, page, pageSize) => {
+  const offset = (page - 1) * pageSize;
+  return array.slice(offset, offset + pageSize);
 };
 
-app.use(cors());
-app.use(express.json());
+// 라우트 설정
+app.get('/todos', (req, res) => {
+  const { page = 1, pageSize = 5 } = req.query;
+  const paginatedTodos = paginate(todos, parseInt(page), parseInt(pageSize));
+  res.json({ data: paginatedTodos, page, pageSize });
+});
 
-app.get("/", async (req, res) => {
-  const study = await prisma.studyGroup.findMany({});
-  res.send(study);
-}); // test
+app.get('/todos/:id', (req, res) => {
+  const { id } = req.params; // URL에서 id 추출
+  const todo = todos.find((todo) => todo.id === parseInt(id)); // id로 Todo 찾기
 
-// 스터디 조회 api , page,
-app.get(
-  "/study",
-  asyncHandler(async (req, res) => {
-    const {
-      page = 1,
-      pageSize = 3,
-      orderBy = "recent",
-      keyword = "",
-    } = req.query;
-    const offset = (page - 1) * pageSize;
-    let sortOption;
-    switch (orderBy) {
-      case "recent":
-        sortOption = { createdAt: "desc" };
-        break;
-      case "oldest":
-        sortOption = { createdAt: "asc" };
-        break;
-      case "highestPoint":
-        sortOption = { point: "desc" };
-        break;
-      case "lowestPoints":
-        sortOption = { point: "asc" };
-        break;
-      default:
-        sortOption = { createdAt: "desc" };
-        break;
-    }
-
-    const search = keyword
-      ? {
-          OR: [
-            { nickname: { contains: keyword, mode: "insensitive" } },
-            { studyname: { contains: keyword, mode: "insensitive" } },
-          ],
-        }
-      : {};
-    const study = await prisma.studyGroup.findMany({
-      where: search,
-      skip: parseInt(offset),
-      take: parseInt(pageSize),
-      orderBy: sortOption,
-    });
-    const totalCount = await prisma.studyGroup.count({
-      where: search,
-    });
-    res.send({ list: study, totalCount });
-  })
-);
-
-app.post("/study", async (req, res) => {
-  try {
-    const { nickname, studyname, description, password, point, img, tags } =
-      req.body;
-    const newStudyGroup = await prisma.studyGroup.create({
-      data: {
-        nickname,
-        studyname,
-        description,
-        password,
-        img,
-        point: point || 0,
-        tags: tags || [],
-      },
-    });
-    res.status(201).json({ id: newStudyGroup.id });
-  } catch (error) {
-    console.error("Error creating study group:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+  if (todo) {
+    res.json(todo); // Todo를 JSON 형식으로 응답
+  } else {
+    res.status(404).json({ message: '해당 ID의 Todo를 찾을 수 없습니다.' }); // 에러 메시지
   }
 });
 
-// 특정 스터디 조회 api  ,
-app.get(
-  "/study/:id",
-  asyncHandler(async (req, res) => {
-    const id = req.params.id;
+app.post('/todos', (req, res) => {
+  const { text } = req.body;
+  if (!text) {
+    return res.status(400).json({ message: 'Todo 텍스트는 필수입니다.' });
+  }
 
-    const study = await prisma.studyGroup.findUniqueOrThrow({
-      where: { id },
-    });
+  const newTodo = {
+    id: todos.length + 1,
+    text,
+  };
+  todos.push(newTodo);
+  res.status(201).json(newTodo);
+});
 
-    res.send(study);
-  })
-);
+app.delete('/todos/:id', (req, res) => {
+  const { id } = req.params;
+  const todoIndex = todos.findIndex(todo => todo.id === parseInt(id));
+  if (todoIndex !== -1) {
+    todos.splice(todoIndex, 1);
+    res.status(200).json({ message: 'Todo가 삭제되었습니다.' });
+  } else {
+    res.status(404).json({ message: 'Todo를 찾을 수 없습니다.' });
+  }
+});
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Server started`);
+// 서버 실행
+app.listen(port, () => {
+  console.log(`서버가 http://localhost:${port}에서 실행 중입니다.`);
+  console.log(`데이터베이스 URL: ${DATABASE_URL}`);
 });

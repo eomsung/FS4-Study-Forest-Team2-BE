@@ -1,20 +1,23 @@
-GET http://localhost:3100/study
+# Todo 목록 가져오기 (페이지네이션 포함)
+GET http://localhost:3100/todos?page=1&pageSize=5
+Headers:
+  Accept: application/json
 
-###
+# Todo ID로 조회
+GET http://localhost:3100/todos/1
+Headers:
+  Accept: application/json
 
-GET http://localhost:3100/study/f58af8d8-d37b-4f9d-8e40-2c9a39a7e445
-
-###
-
-POST http://localhost:3100/study
-Content-Type: application/json
-
+# 새로운 Todo 추가
+POST http://localhost:3100/todos
+Headers:
+  Content-Type: application/json
+Body:
 {
-  "nickname": "studyMaster",
-  "studyname": "Math Enthusiasts",
-  "description": "A group for people passionate about math.",
-  "password": "secure123",
-  "point": 10,
-  "img": "image1.png",
-  "tags": ["math", "enthusiasts"]
+  "text": "새로운 Todo 추가"
 }
+
+# Todo 삭제
+DELETE http://localhost:3100/todos/1
+Headers:
+  Accept: application/json

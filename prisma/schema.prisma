@@ -1,27 +1,15 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model StudyGroup {
-  id          String   @id @default(uuid())
-  nickname    String
-  studyname   String
-  description String
-  password    String
-  img         String?
-  point       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tags        String[] @default([])
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement()) // 자동 증가하는 ID
+  text      String   // 할 일 내용
+  createdAt DateTime @default(now())  // 생성 시간
+  updatedAt DateTime @updatedAt  // 수정 시간 자동 갱신
 }

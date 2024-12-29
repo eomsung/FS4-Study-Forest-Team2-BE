@@ -1,0 +1,16 @@
+ .time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 184px;
+    height: 35px;
+    font-size: 16px;
+    border-radius: 50px;
+    padding-right: 3px;
+    padding-left: 3px;
+    gap: 8px;
+    margin-top: 10px;
+    margin-left: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: inherit;
+  }

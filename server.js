@@ -125,6 +125,47 @@ app.get(
   })
 );
 
+// Todo api //
+app.get(
+  "/study/:id/todo",
+  asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const todo = await prisma.todo.findMany({
+      where: { studyGroupId: id },
+    });
+    res.send(todo);
+  })
+);
+
+app.post(
+  "/study/:id/todo",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: "Text is required" });
+    }
+
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+
+    const newTodo = await prisma.todo.create({
+      data: {
+        text,
+        studyGroupId: id,
+      },
+    });
+
+    res.status(201).json(newTodo);
+  })
+);
+
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server started`);
 });

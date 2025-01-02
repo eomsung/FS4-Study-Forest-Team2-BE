@@ -24,4 +24,16 @@ model StudyGroup {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   tags        String[] @default([])
+
+  Todo        Todo[]
+}
+
+model Todo {
+  id           Int        @id @default(autoincrement())
+  text         String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  
+  StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
+  studyGroupId String
 }

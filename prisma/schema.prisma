@@ -14,26 +14,34 @@ datasource db {
 }
 
 model StudyGroup {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   nickname    String
   studyname   String
   description String
   password    String
   img         String?
-  point       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tags        String[] @default([])
-
+  point       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   Todo        Todo[]
+  Emoticon    Emoticon[]
 }
 
 model Todo {
-  id           Int        @id @default(autoincrement())
-  text         String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
   studyGroupId String
+}
+
+model Emoticon {
+  id        String   @id @default(uuid())
+  emoticons String 
+  count     Int      @default(0)
+
+  StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
+  studyGroupId String 
 }

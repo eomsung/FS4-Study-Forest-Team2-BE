@@ -99,8 +99,7 @@ app.get(
 
 app.post("/study", async (req, res) => {
   try {
-    const { nickname, studyname, description, password, point, img, tags } =
-      req.body;
+    const { nickname, studyname, description, password, point, img } = req.body;
     const newStudyGroup = await prisma.studyGroup.create({
       data: {
         nickname,
@@ -109,7 +108,6 @@ app.post("/study", async (req, res) => {
         password,
         img,
         point: point || 0,
-        tags: tags || [],
       },
     });
     res.status(201).json({ id: newStudyGroup.id });

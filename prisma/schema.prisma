@@ -39,9 +39,9 @@ model Todo {
 
 model Emoticon {
   id        String   @id @default(uuid())
-  emoticons String[] @default([])
+  emoticons String 
   count     Int      @default(0)
 
   StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
-  studyGroupId String
+  studyGroupId String 
 }

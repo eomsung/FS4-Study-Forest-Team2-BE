@@ -2,7 +2,7 @@ GET http://localhost:3100/study
 
 ###
 
-GET http://localhost:3100/study/f58af8d8-d37b-4f9d-8e40-2c9a39a7e445
+GET http://localhost:3100/study/52460725-f825-409e-9bfb-f5c0b5452420
 
 ###
 
@@ -18,3 +18,21 @@ Content-Type: application/json
   "img": "image1.png",
   "tags": ["math", "enthusiasts"]
 }
+###
+POST http://localhost:3100/study/9dfdd5da-34ca-4370-b0be-8184fbfcf768/todo
+Content-Type: application/json
+
+{
+  "text": "Complete React hooks tutorial"
+}
+
+
+###
+
+POST http://localhost:3100/study/1cd13ed4-4a7e-41ec-a06c-7d3914b36b7c/emoticon
+Content-Type: application/json
+
+{
+  "emoticon": "😊
+}
+###

@@ -81,6 +81,14 @@ app.get(
       skip: parseInt(offset),
       take: parseInt(pageSize),
       orderBy: sortOption,
+      include: {
+        Emoticon: {
+          orderBy: {
+            count: "desc",
+          },
+          take: 3,
+        },
+      },
     });
     const totalCount = await prisma.studyGroup.count({
       where: search,
@@ -119,6 +127,14 @@ app.get(
 
     const study = await prisma.studyGroup.findUniqueOrThrow({
       where: { id },
+      include: {
+        Emoticon: {
+          orderBy: {
+            count: "desc",
+          },
+          take: 3,
+        },
+      },
     });
 
     res.send(study);
@@ -163,6 +179,51 @@ app.post(
     });
 
     res.status(201).json(newTodo);
+  })
+);
+
+// emoticon api  //
+app.post(
+  "/study/:id/emoticon",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { emoticon } = req.body;
+
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+
+    let existingEmoticon = await prisma.emoticon.findFirst({
+      where: {
+        studyGroupId: id,
+        emoticons: emoticon,
+      },
+    });
+
+    if (existingEmoticon) {
+      existingEmoticon = await prisma.emoticon.update({
+        where: { id: existingEmoticon.id },
+        data: {
+          count: {
+            increment: 1,
+          },
+        },
+      });
+    } else {
+      existingEmoticon = await prisma.emoticon.create({
+        data: {
+          studyGroupId: id,
+          emoticons: emoticon,
+          count: 1,
+        },
+      });
+    }
+
+    res.status(201).json(existingEmoticon);
   })
 );
 

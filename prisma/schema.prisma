@@ -32,16 +32,17 @@ model Todo {
   text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  done      Boolean  @default(false)
 
   StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
   studyGroupId String
 }
 
 model Emoticon {
-  id        String   @id @default(uuid())
-  emoticons String 
-  count     Int      @default(0)
+  id        String @id @default(uuid())
+  emoticons String
+  count     Int    @default(0)
 
   StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
-  studyGroupId String 
+  studyGroupId String
 }

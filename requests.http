@@ -2,7 +2,7 @@ GET http://localhost:3100/study
 
 ###
 
-GET http://localhost:3100/study/52460725-f825-409e-9bfb-f5c0b5452420
+GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298
 
 ###
 
@@ -19,20 +19,64 @@ Content-Type: application/json
   "tags": ["math", "enthusiasts"]
 }
 ###
-POST http://localhost:3100/study/9dfdd5da-34ca-4370-b0be-8184fbfcf768/todo
+POST http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
 Content-Type: application/json
 
 {
-  "text": "Complete React hooks tutorial"
+  "text": "청소하기"
 }
 
 
 ###
 
-POST http://localhost:3100/study/1cd13ed4-4a7e-41ec-a06c-7d3914b36b7c/emoticon
+POST http://localhost:3100/study/caa2663a-879c-4b21-8c8f-63ab9a7d1c28/emoticon
 Content-Type: application/json
 
 {
-  "emoticon": "😊
+  "emoticon": "😇"
 }
 ###
+GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
+###
+DELETE http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo/13
+
+###
+POST http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todos
+Content-Type: application/json
+
+[
+  {
+    "id": 14,
+    "text": "청소하기",
+    "createdAt": "2025-01-05T07:00:32.455Z",
+    "updatedAt": "2025-01-05T07:00:32.455Z",
+    "done": false,
+    "studyGroupId": "bf794db0-3877-40f7-a6c9-96676380a298"
+  },
+  {
+    "id": 16,
+    "text": "ㅁㄴㅁㄴㅇㅇ",
+    "createdAt": "2025-01-05T08:11:37.440Z",
+    "updatedAt": "2025-01-05T08:11:37.440Z",
+    "done": false,
+    "studyGroupId": "bf794db0-3877-40f7-a6c9-96676380a298"
+  },
+  {
+    "id": 22,
+    "text": "ㅁㄴㅇㅁㄴㅇ",
+    "createdAt": "2025-01-05T08:33:12.405Z",
+    "updatedAt": "2025-01-05T08:33:12.405Z",
+    "done": false,
+    "studyGroupId": "bf794db0-3877-40f7-a6c9-96676380a298"
+  },
+  {
+    "id": 23,
+    "text": "ㅁㄴㅇ",
+    "createdAt": "2025-01-05T08:36:03.515Z",
+    "updatedAt": "2025-01-05T08:36:03.515Z",
+    "done": false,
+    "studyGroupId": "bf794db0-3877-40f7-a6c9-96676380a298"
+  }
+]
+
+

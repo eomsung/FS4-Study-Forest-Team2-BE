@@ -130,7 +130,6 @@ app.get(
           orderBy: {
             count: "desc",
           },
-          take: 3,
         },
       },
     });
@@ -177,6 +176,84 @@ app.post(
     });
 
     res.status(201).json(newTodo);
+  })
+);
+
+app.post(
+  "/study/:studyGroupId/todos",
+  asyncHandler(async (req, res) => {
+    const { studyGroupId } = req.params;
+    const todos = req.body;
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id: studyGroupId },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+
+    const newTodos = await prisma.todo.createMany({
+      data: todos.map((todo) => ({
+        text: todo.text,
+        studyGroupId: studyGroupId,
+        done: todo.done || false,
+        createdAt: todo.createdAt,
+        updatedAt: todo.updatedAt,
+        id: todo.id,
+      })),
+    });
+
+    res.status(201).json({
+      message: `${newTodos.count} todos created successfully.`,
+      createdCount: newTodos.count,
+    });
+  })
+);
+
+app.delete(
+  "/study/:studyGroupId/todo/:todoId",
+  asyncHandler(async (req, res) => {
+    const { studyGroupId, todoId } = req.params;
+    const parsedTodoId = parseInt(todoId, 10);
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id: studyGroupId },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+    const deletedTodo = await prisma.todo.delete({
+      where: {
+        id: parsedTodoId,
+        studyGroupId: studyGroupId,
+      },
+    });
+
+    res.status(200).json({ message: "Todo deleted successfully", deletedTodo });
+  })
+);
+
+app.delete(
+  //전부 삭제하기
+  "/study/:studyGroupId/todo",
+  asyncHandler(async (req, res) => {
+    const { studyGroupId } = req.params;
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id: studyGroupId },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+    const deletedTodo = await prisma.todo.deleteMany({
+      where: {
+        studyGroupId: studyGroupId,
+      },
+    });
+    res.status(200).json({
+      message: "Todos deleted successfully",
+      deletedCount: deletedTodo.count,
+    });
   })
 );
 

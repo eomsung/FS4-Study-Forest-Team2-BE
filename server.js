@@ -112,6 +112,13 @@ app.get(
   })
 );
 
+app.get("/studyids", async (req, res) => {
+  const study = await prisma.studyGroup.findMany({
+    select: { id: true },
+  });
+  res.send(study);
+}); // test
+
 app.post("/study", async (req, res) => {
   try {
     const { nickname, studyname, description, password, point, img } = req.body;
@@ -162,6 +169,20 @@ app.delete(
     });
 
     res.status(200).json({ message: "studygroup deleted successfully" });
+  })
+);
+
+app.patch(
+  "/study/:id",
+  asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const { nickname, studyname, description, img } = req.body;
+    await prisma.studyGroup.update({
+      where: { id },
+      data: { nickname, studyname, description, img },
+    });
+
+    res.status(200).json({ message: "studygroup patch successfully" });
   })
 );
 

@@ -1,11 +1,13 @@
-GET http://localhost:3100/study?page=1&pageSize=2
+GET http://localhost:3100/study?page=1&pageSize=10
 
 ###
 
-GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298
+GET http://localhost:3100/study/e4d0389b-e823-443f-b786-08a13dfd2217
 
 ###
+DELETE http://localhost:3100/study/2a2d8777-badb-481e-9e54-ba4b52b8d6fa
 
+###
 POST http://localhost:3100/study
 Content-Type: application/json
 
@@ -19,7 +21,7 @@ Content-Type: application/json
   "tags": ["math", "enthusiasts"]
 }
 ###
-POST http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
+POST http://localhost:3100/e4d0389b-e823-443f-b786-08a13dfd2217/todo
 Content-Type: application/json
 
 {
@@ -85,6 +87,8 @@ PATCH  http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo/46
 Content-Type: application/json
 
 {
-  "dayIndex": 1,  
+  "dayIndex": 0,  
   "done": true     
 }
+###
+GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo

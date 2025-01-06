@@ -3,6 +3,8 @@ GET http://localhost:3100/study?page=1&pageSize=10
 ###
 
 GET http://localhost:3100/study/e4d0389b-e823-443f-b786-08a13dfd2217
+###
+GET http://localhost:3100/studyids
 
 ###
 DELETE http://localhost:3100/study/2a2d8777-badb-481e-9e54-ba4b52b8d6fa
@@ -92,3 +94,15 @@ Content-Type: application/json
 }
 ###
 GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
+
+###
+
+PATCH http://localhost:3100/study/70db478f-969b-4cf3-ba93-4046b976d937
+Content-Type: application/json
+
+{
+  "nickname": "newNick",
+  "studyname": "newStudy",
+  "description": "new description",
+  "img": "8"
+}

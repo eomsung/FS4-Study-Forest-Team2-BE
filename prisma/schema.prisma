@@ -28,11 +28,11 @@ model StudyGroup {
 }
 
 model Todo {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   text      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  done      Boolean  @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  done      Boolean[] @default([false, false, false, false, false, false, false])
 
   StudyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
   studyGroupId String

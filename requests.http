@@ -1,4 +1,4 @@
-GET http://localhost:3100/study
+GET http://localhost:3100/study?page=1&pageSize=2
 
 ###
 
@@ -38,7 +38,7 @@ Content-Type: application/json
 ###
 GET http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
 ###
-DELETE http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo/13
+DELETE http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo
 
 ###
 POST http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todos
@@ -80,3 +80,11 @@ Content-Type: application/json
 ]
 
 
+###
+PATCH  http://localhost:3100/study/bf794db0-3877-40f7-a6c9-96676380a298/todo/46
+Content-Type: application/json
+
+{
+  "dayIndex": 1,  
+  "done": true     
+}

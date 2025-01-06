@@ -233,6 +233,40 @@ app.delete(
   })
 );
 
+app.patch(
+  "/study/:studyGroupId/point",
+  asyncHandler(async (req, res) => {
+    const { studyGroupId } = req.params;
+    const { point } = req.body; // 클라이언트에서 전달한 새로운 포인트 값
+
+    // 포인트 값 검증
+    if (typeof point !== "number" || point < 0) {
+      return res.status(400).json({ error: "Invalid point value" });
+    }
+
+    // 해당 studyGroup을 찾음
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id: studyGroupId },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+
+    // 포인트 업데이트
+    const updatedStudyGroup = await prisma.studyGroup.update({
+      where: { id: studyGroupId },
+      data: { point: point },
+    });
+
+    // 업데이트된 studyGroup 반환
+    res.status(200).json({
+      message: "Study group point updated successfully",
+      studyGroup: updatedStudyGroup,
+    });
+  })
+);
+
 app.delete(
   //전부 삭제하기
   "/study/:studyGroupId/todo",

@@ -3,6 +3,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { assert } from "superstruct";
 import * as dotenv from "dotenv";
 import cors from "cors";
+import cron from "node-cron";
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -32,6 +33,20 @@ const asyncHandler = (handler) => {
 
 app.use(cors());
 app.use(express.json());
+
+cron.schedule("0 0 * * 1", async () => {
+  //매주 초기화하는 코드
+  try {
+    await prisma.todo.updateMany({
+      data: {
+        done: [false, false, false, false, false, false, false],
+      },
+    });
+    console.log("Todo items reset successfully.");
+  } catch (error) {
+    console.error("Error resetting Todo items:", error);
+  }
+});
 
 app.get("/", async (req, res) => {
   const study = await prisma.studyGroup.findMany({});
@@ -254,6 +269,50 @@ app.delete(
       message: "Todos deleted successfully",
       deletedCount: deletedTodo.count,
     });
+  })
+);
+
+app.patch(
+  //
+  "/study/:studyGroupId/todo/:todoId",
+  asyncHandler(async (req, res) => {
+    const { studyGroupId, todoId } = req.params;
+    const parsedTodoId = parseInt(todoId, 10);
+    const { dayIndex, done } = req.body;
+
+    const studyGroup = await prisma.studyGroup.findUnique({
+      where: { id: studyGroupId },
+    });
+
+    if (!studyGroup) {
+      return res.status(404).json({ error: "Study group not found" });
+    }
+
+    const todo = await prisma.todo.findUnique({
+      where: {
+        id: parsedTodoId,
+        studyGroupId: studyGroupId,
+      },
+    });
+
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    const updatedDone = [...todo.done];
+    updatedDone[dayIndex] = done;
+
+    const patchTodo = await prisma.todo.update({
+      where: {
+        id: parsedTodoId,
+        studyGroupId: studyGroupId,
+      },
+      data: {
+        done: updatedDone,
+      },
+    });
+
+    res.status(200).json(patchTodo);
   })
 );
 

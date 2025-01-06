@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { assert } from "superstruct";
 import * as dotenv from "dotenv";
@@ -150,6 +150,18 @@ app.get(
     });
 
     res.send(study);
+  })
+);
+
+app.delete(
+  "/study/:id",
+  asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    await prisma.studyGroup.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ message: "studygroup deleted successfully" });
   })
 );
 
